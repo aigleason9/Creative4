@@ -12,7 +12,7 @@
     </nav>
     <router-view/>
     <footer>
-      <a href="https://github.com/aigleason9/Creative3">See the code</a>
+      <a href="https://github.com/aigleason9/Creative4">See the code</a>
     </footer>
   </div>
 </template>
