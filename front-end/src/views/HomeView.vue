@@ -9,11 +9,14 @@
 
       <div class="login">
 
-        <div v-if="user">
-          <h2>Logged in as: {{user.firstName}} {{user.lastName}}</h2>
-        </div>
+        <!-- <div v-if="user">
+          <h2>Logged in as: {{user.firstName}} {{user.lastName}}<button id="logout" @click="logout" class="pure-button pure-button-primary">Logout</button></h2>
+          
+        </div> -->
 
-        <LoginRegister v-else/>
+        <div v-if="!user" class="register">
+          <LoginRegister/>
+        </div>
 
       </div>
             
@@ -48,6 +51,20 @@ export default {
       return this.$root.$data.user;
     }
   },
+
+  methods: {
+
+    async logout() {
+
+      try {
+        await axios.delete("/api/users");
+        this.$root.$data.user = null;
+
+      } catch (error) {
+        this.$root.$data.user = null;
+      }
+    },
+  }
 }
 </script>
 
@@ -58,30 +75,33 @@ export default {
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
-    height: 83vh;
+    height: 115vh;
   }
 
   .overlay {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin-bottom: 10px;
   }
 
   .login {
     float: right;
   }
 
+  .register {
+    margin-bottom: 50px;
+  }
+
   .welcome {
-    position: absolute;
     text-align: center;
-    top: 50%;
-    transform: translateY(-50%);
     margin-left: 30px;
     margin-right: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
+
 
   h1, h3 {
     text-align: center;
@@ -108,4 +128,13 @@ export default {
     border-radius: 30px;
     float: right;
   }
+
+  .pure-button {
+    background-color: #DE6E4B;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+  }
+
+  
 </style>

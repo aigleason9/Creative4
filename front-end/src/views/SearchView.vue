@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="user">
 
     <div class="wrapper">
 
@@ -22,53 +22,72 @@
     <BookList :books="books" />
 
   </div>
+  <LoginRegister v-else/>
+
 </template>
 
 <script>
-  import BookList from "../components/BookList.vue"
+    import axios from 'axios';
+    import LoginRegister from '../components/LoginRegister.vue'
+    import BookList from "../components/BookList.vue"
 
-  export default {
-    name: 'search-search',
-    components: {
-      BookList
-    },
+    export default {
+        name: 'search-search',
+        components: {
+            BookList,
+            LoginRegister
+        },
 
-    data() {
-      return {
-        searchTitle: '',
-        searchAuthor: '',
-      }
-    },
+        data() {
+            return {
+                searchTitle: '',
+                searchAuthor: '',
+            }
+        },
 
-    computed: {
-      books() {
-        return this.$root.$data.books.filter(this.titleAndAuthor);
-      }
-    },
+        async created() {
+    
+            try {
+                let response = await axios.get('/api/users');
+                this.$root.$data.user = response.data.user;
 
-    methods: {
-        titleAndAuthor(book) {
+            } catch (error) {
+                this.$root.$data.user = null;
+            }
+        },
+
+        computed: {
+            user() {
+                return this.$root.$data.user;
+            },
+            books() {
+                return this.$root.$data.books.filter(this.titleAndAuthor);
+            }
+        },
+
+        methods: {
+            titleAndAuthor(book) {
+                
+                let theTitle = false;
+                let theAuthor = false;
             
-            let theTitle = false;
-            let theAuthor = false;
-        
-            if (book.title.toLowerCase().search(this.searchTitle.toLowerCase()) >= 0) {
-                theTitle = true;
-            }
-            if (book.author.toLowerCase().search(this.searchAuthor.toLowerCase()) >= 0) {
-                theAuthor = true;
-            }
+                if (book.title.toLowerCase().search(this.searchTitle.toLowerCase()) >= 0) {
+                    theTitle = true;
+                }
+                if (book.author.toLowerCase().search(this.searchAuthor.toLowerCase()) >= 0) {
+                    theAuthor = true;
+                }
 
-            if (theTitle & theAuthor) {
-                return true;
+                if (theTitle & theAuthor) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
             }
-            else {
-                return false;
-            }
-        }
-    },
+        },
 
-  }
+    }
 </script>
 
 <style scoped>

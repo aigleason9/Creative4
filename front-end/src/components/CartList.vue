@@ -5,29 +5,29 @@
     </div>
 
     <div v-else>
-        <h1 class="total">Cart subtotal: ${{subtotal}}</h1>
+        <h1 class="total">Your Cart: ${{subtotal}}</h1>
 
         <div class="wrapper">
 
 
             <div class="cart">
 
-                <div class="cartItem" v-for="book in cart" :key="book.id">
+                <div class="cartItem" v-for="item in cart" :key="item.book.id">
 
                     <div class="info">
-                        <h1>{{book.title}}</h1>
-                        <p>{{book.author}}</p>
+                        <h1>{{item.book.title}}</h1>
+                        <p>{{item.book.author}}</p>
                     </div>
 
                     <div class = "cartInnerItem">
 
                         <div class="image">
-                            <img :src="'/images/'+book.image">
+                            <img :src="'/images/'+item.book.image">
                         </div>
 
                         <div class="price">
-                            <h2>{{book.price}}</h2>
-                            <button class="auto" v-on:click="removeFromCart(book)">Remove</button>
+                            <h2>{{item.book.price}}</h2>
+                            <button class="auto" v-on:click="removeFromCart(item.book)">Remove</button>
                         </div>
 
                     </div>
@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'CartList',
   props: {
@@ -62,8 +63,9 @@ export default {
           let sum = 0
           let theCart = this.$root.$data.cart;
 
+
           for (let i = 0; i < theCart.length; i++) {
-            let book = theCart[i];
+            let book = theCart[i].book;            
 
             let price = parseFloat(book.price.slice(1));
             sum += price;
@@ -74,11 +76,32 @@ export default {
     },
 
   methods: {
-      removeFromCart (book) {
-          this.$root.$data.cart = this.$root.$data.cart.filter(function(value) {
-              return value != book
-          })
-          console.log(this.$root.$data.cart)
+        async getCart() {
+
+            try {
+                let response = await axios.get("/api/cart");
+                this.$root.$data.cart = response.data.books;
+                return true;
+
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        async removeFromCart(book) {
+            try {
+
+                console.log(book.id)
+
+                await axios.delete("/api/cart/" + book.id);
+
+                this.findItem = null;
+                this.getCart();
+                return true;
+
+            } catch (error) {
+                // console.log(error);
+            }
       }
   },
 }
@@ -96,11 +119,13 @@ export default {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-around;
+        margin-bottom: 60px;
     }
 
     .cartItem {
         margin: 10px;
         margin-top: 50px;
+        
         width: 300px;
         display: flex;
         flex-direction: column;

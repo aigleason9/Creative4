@@ -1,37 +1,62 @@
 <template>
-    <div>
+    <div v-if="user">
         <div class="pure-menu pure-menu-horizontal">
-            <ul class="pure-menu-list">
-                <li class="pure-menu-item"><a @click="select('historical')" href="#" class="pure-menu-link">Historical Fiction</a></li>
-                <li class="pure-menu-item"><a @click="select('fantasy')" href="#" class="pure-menu-link">Fantasy</a></li>
-                <li class="pure-menu-item"><a @click="select('romance')" href="#" class="pure-menu-link">Romance</a></li>
-            </ul>
+            <h3 class="suggested">{{genreTitle}} books for you</h3>
         </div>
 
-        <BookList :books="books" />
+        <BookList :books="books"/>
+        
 
     </div>
+    <LoginRegister v-else/>
 </template>
 
 <script>
+    import axios from 'axios';
+    import LoginRegister from '../components/LoginRegister.vue'
     import BookList from "../components/BookList.vue"
 
     export default {
         name: 'genre-genre',
 
         components: {
-            BookList
+            BookList,
+            LoginRegister
         },
 
-        data() {
-            return {
-                genre: '',
+        async created() {
+    
+            try {
+                let response = await axios.get('/api/users');
+                this.$root.$data.user = response.data.user;
+
+            } catch (error) {
+                this.$root.$data.user = null;
             }
         },
 
         computed: {
+            user() {
+                return this.$root.$data.user;
+            },
+
+            genre() {
+                return this.user.genre
+            },
+
             books() {
                 return this.$root.$data.books.filter(book => book.genre.includes(this.genre));
+            },
+            genreTitle() {
+                if (this.user.genre == "historical") {
+                    return "Historical Fiction"
+                }
+                else if (this.user.genre == "fantasy") {
+                    return "Fantasy"
+                }
+                else {
+                    return "Romance"
+                }
             }
         },
 
@@ -50,5 +75,9 @@
         justify-content: center;
         background-color: #DE6E4B;
         padding-bottom: 80px;
+    }
+
+    .suggested {
+        color:black
     }
 </style>

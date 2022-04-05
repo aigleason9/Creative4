@@ -36,18 +36,12 @@ router.get('/', validUser, async (req, res) => {
 
     let books = [];
     try {
-        if (req.user.role === "admin") {
-            books = await Book.find().sort({
-                created: -1
-            });
 
-        } else {
-            books = await Book.find({
-                user: req.user
-            }).sort({
-                created: -1
-            });
-        }
+        books = await book.find({
+            user: req.user
+        }).sort({
+            created: -1
+        });
 
         return res.send({
             books: books
@@ -62,15 +56,16 @@ router.get('/', validUser, async (req, res) => {
 // add to a cart
 router.post('/', validUser, async (req, res) => {
 
-    const book = new Book({
+
+    const theBook = new book({
         user: req.user,
         book: req.body.book,
     });
 
     try {
-        await book.save();
+        await theBook.save();
         return res.send({
-            book: book
+            book: theBook
         });
 
     } catch (error) {
@@ -80,18 +75,11 @@ router.post('/', validUser, async (req, res) => {
 });
 
 // remove a book from a cart
-router.put('/:id', validUser, async (req, res) => {
-
-
-    if (!req.body.status || !req.body.response) {
-        return res.status(400).send({
-            message: "status and response are required"
-        });
-    }
+router.delete('/:id', validUser, async (req, res) => {
 
     try {
-        await Book.deleteOne({
-            _id: req.params.id
+        await book.deleteOne({
+            id: req.params.id
         });
 
         res.sendStatus(200);

@@ -3,10 +3,9 @@
     <nav>
       <router-link to="/">Home</router-link> |
       <router-link to="/catalogue">Catalogue</router-link> |
-      <router-link to="/staff">Staff Picks</router-link> |
-      <router-link to="/genre">Browse by Genre</router-link> |
+      <router-link to="/genre">Suggested for you</router-link> |
       <router-link to="/search">Search</router-link> |
-      <router-link to="/cart">Cart ({{numItems}})</router-link> |
+      <router-link to="/cart">Account/Logout</router-link> |
       <router-link to="/about">About Us</router-link>
 
 
@@ -55,7 +54,7 @@ nav a.router-link-exact-active {
 }
 
 footer {
-  position: sticky;
+  position: fixed;
   bottom: 0;
   width: 100%;
   /* z-index: 100; */

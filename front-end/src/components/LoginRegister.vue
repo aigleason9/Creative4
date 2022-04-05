@@ -7,19 +7,38 @@
             <form class="pure-form">
 
                 <fieldset>
-                <legend>Register for an account</legend>
-                <input placeholder="first name" v-model="firstName">
-                <input placeholder="last name" v-model="lastName">
-            </fieldset>
+                  <legend>If you don't have an account, register for one here</legend>
+                  <input placeholder="first name" v-model="firstName">
+                  <input placeholder="last name" v-model="lastName">
+              </fieldset>
 
-            <fieldset>
-            <input placeholder="username" v-model="username">
-            <input type="password" placeholder="password" v-model="password">
-            </fieldset>
+              <fieldset>
+                <input placeholder="username" v-model="username">
+                <input type="password" placeholder="password" v-model="password">
+              </fieldset>
 
-            <fieldset>
-                <button type="submit" class="pure-button pure-button-primary" @click.prevent="register">Register</button>
-            </fieldset>
+              <fieldset>
+                <p>Select your preferred genre from those listed:</p>
+                <div class="buttons">
+
+                  <div>
+                    <input type="radio" id="romance" v-model="genre" value="romance">
+                    <label for="romance">Romance</label>
+                  </div>
+                  <div>
+                    <input type="radio" id="fantasy" v-model="genre" value="fantasy">
+                    <label for="fantasy">Fantasy</label>
+                  </div>
+                  <div>
+                    <input type="radio" id="historical" v-model="genre" value="historical">
+                    <label for="historical">Historical fiction</label>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                  <button type="submit" class="pure-button pure-button-primary" @click.prevent="register">Register</button>
+              </fieldset>
 
         </form>
 
@@ -58,6 +77,7 @@ export default {
       password: '',
       usernameLogin: '',
       passwordLogin: '',
+      genre: '',
       error: '',
       errorLogin: '',
     }
@@ -70,7 +90,7 @@ export default {
       this.error = '';
       this.errorLogin = '';
 
-      if (!this.firstName || !this.lastName || !this.username || !this.password)
+      if (!this.firstName || !this.lastName || !this.username || !this.password || !this.genre)
         return;
 
       try {
@@ -79,6 +99,7 @@ export default {
           lastName: this.lastName,
           username: this.username,
           password: this.password,
+          genre: this.genre
         });
 
         this.$root.$data.user = response.data.user;
@@ -148,13 +169,31 @@ input {
   margin-right: 10px;
 }
 
+label {
+  margin-right: 25px;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
 .error {
   margin-top: 20px;
   display: inline;
   padding: 5px 20px;
   border-radius: 30px;
   font-size: 10px;
-  background-color: #d9534f;
+  background-color: #DE6E4B;
   color: #fff;
 }
+
+.pure-button {
+    background-color: #8ff2d8;
+    color:black;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+  }
 </style>

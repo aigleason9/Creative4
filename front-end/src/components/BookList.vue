@@ -28,16 +28,45 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
-  name: 'BookList',
-  props: {
-    books: Array
-  },
-  methods: {
-      addToCart (book) {
-          this.$root.$data.cart.push(book)
-      }
-  },
+    name: 'BookList',
+    props: {
+        books: Array
+    },
+
+    async created() {
+        try {
+            let response = await axios.get('/api/users');
+            this.$root.$data.user = response.data.user;
+
+        } catch (error) {
+            this.$root.$data.user = null;
+        }
+    },
+
+    computed: {
+        user() {
+                return this.$root.$data.user;
+        },
+    },
+
+    methods: {
+        async addToCart (book) {
+            try {
+                await axios.post("/api/cart", {
+                    user: this.user,
+                    book: book
+                });
+
+                this.book = "";
+                return true;
+
+            } catch (error) {
+                console.log(error);
+            }
+        },
+    },
 }
 </script>
 

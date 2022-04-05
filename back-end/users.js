@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
     username: String,
+    genre: String,
     password: String,
   });
 
@@ -113,9 +114,6 @@ const validUser = async (req, res, next) => {
 // create a new user
 router.post('/', async (req, res) => {
 
-
-  console.log("Attempting to register")
-
     // Make sure that the form coming from the browser includes a username and a
     // passsword, otherwise return an error. A 400 error means the request was
     // malformed.
@@ -142,7 +140,8 @@ router.post('/', async (req, res) => {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             username: req.body.username,
-            password: req.body.password
+            password: req.body.password,
+            genre: req.body.genre
         });
 
         await user.save();
@@ -205,7 +204,8 @@ router.post('/login', async (req, res) => {
 
 // get logged in user
 router.get('/', validUser, async (req, res) => {
-    try {
+
+  try {
         res.send({
             user: req.user
         });
@@ -214,6 +214,26 @@ router.get('/', validUser, async (req, res) => {
         console.log(error);
         return res.sendStatus(500);
     }
+});
+
+router.put('/', async (req, res) => {
+
+  try {
+
+    let user = await User.findOne({
+      username: req.body.username
+    });
+
+  
+    user.genre = req.body.genre;
+
+
+    await user.save();
+    res.send(user);
+
+  } catch (error) {
+    res.sendStatus(500);
+  }
 });
 
 // logout
